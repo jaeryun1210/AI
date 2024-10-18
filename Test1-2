@@ -1,0 +1,73 @@
+import pandas as pd
+import matplotlib.pyplot as plt
+
+red=pd.read_csv('http://archive.ics.uci.edu/ml/machine-learning-databases/wine-quality/winequality-red.csv',sep=';')
+
+print(red.head())
+columns_num = red.shape[1]
+print("\n열의 개수 : ",columns_num)
+
+columns_name = red.columns.tolist()
+print("열 이름 : \n" + "\n".join(columns_name))
+
+num_row = len(red)
+print("\n행의 개수 : ",num_row)
+
+red.plot(x='fixed acidity', y='quality', style='o')
+plt.title('Fixed Acidity vs Quality')
+plt.xlabel('Fixed Acidity')
+plt.ylabel('Quality')
+plt.show()
+
+import numpy as np
+from sklearn import metrics
+from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import StandardScaler
+from sklearn.neighbors import KNeighborsClassifier
+from sklearn.metrics import accuracy_score
+
+X = red.iloc[:, :-1].values
+y = red.iloc[:, -1].values
+
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.20, random_state=42)
+
+scaler = StandardScaler()
+X_train = scaler.fit_transform(X_train)
+X_test = scaler.transform(X_test)
+
+knn = KNeighborsClassifier(n_neighbors=6)
+knn.fit(X_train, y_train)
+
+y_pred = knn.predict(X_test)
+print("4번의 정확도: {:.2f}".format(accuracy_score(y_test,y_pred)))
+
+k=10
+acc_array=np.zeros(k)
+for k in np.arange(1,k+1,1):
+    classifier = KNeighborsClassifier(n_neighbors=k).fit(X_train,y_train)
+    y_pred = classifier.predict(X_test)
+    acc = metrics.accuracy_score(y_test, y_pred)
+    acc_array[k-1]=acc
+
+max_acc=np.amax(acc_array)
+acc_list=list(acc_array)
+k=acc_list.index(max_acc)
+print("5번의 정확도 ", max_acc, "으로 최적의 k는", k+1, "입니다.")
+
+from sklearn import svm
+from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import StandardScaler
+import os
+
+os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
+
+X = red.iloc[:, :-1].values
+y = red.iloc[:, -1].values
+
+x_train, x_test, y_train, y_test = train_test_split(X, y, test_size=0.6, random_state=42)
+
+svm_model = svm.SVC(kernel='linear', C=1.0, gamma='scale')
+svm_model.fit(x_train, y_train)
+predictions = svm_model.predict(x_test)
+score = metrics.accuracy_score(y_test, predictions)
+print('6번의 정확도: {0:f}\n\n'.format(score))
