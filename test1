@@ -1,0 +1,56 @@
+import pandas as pd
+
+from google.colab import files
+file_uploaded = files.upload()
+data = pd.read_csv('report1.csv',header=None)
+print(data)
+
+from google.colab import drive
+drive.mount('/content/drive/')
+
+data_gg = pd.read_csv('/content/drive/MyDrive/report1.csv')
+print(data_gg)
+
+data.columns = ['Choi','Jae','Ryun']
+
+print(data)
+
+import pandas as pd
+from sklearn.model_selection import train_test_split
+
+dt1 = data.iloc[:,0]
+dt2 = data.iloc[:,1:]
+
+dt1_train, dt1_test, dt2_train, dt2_test = train_test_split(dt1, dt2, test_size=0.4,random_state=42)
+
+print("dt1_train :\n", dt1_train)
+print("dt1_test :\n", dt1_test)
+print("dt2_train :\n", dt2_train)
+print("dt2_test :\n", dt2_test)
+
+import pandas as pd
+from sklearn.model_selection import train_test_split
+
+dt1 = data.iloc[:,0]
+dt2 = data.iloc[:,1:]
+
+dt1_np = dt1.to_numpy()
+dt2_np = dt2.to_numpy()
+
+dt1_train, dt1_test, dt2_train, dt2_test = train_test_split(dt1_np,dt2_np,test_size=0.4,random_state=42)
+
+print("dt1_train :\n", dt1_train)
+print("dt1_test :\n", dt1_test)
+print("dt2_train :\n", dt2_train)
+print("dt2_test :\n", dt2_test)
+
+import numpy as np
+
+reshaped_2d = np.reshape(dt2_np, (5,4))
+print("2차원 배열 :\n", reshaped_2d)
+
+reshaped_3d = np.reshape(dt2_np, (2,5,2))
+print("3차원 배열 :\n", reshaped_3d)
+
+flattend1 =reshaped_2d.flatten()
+print("1차원 배열 :\n", flattend1)
